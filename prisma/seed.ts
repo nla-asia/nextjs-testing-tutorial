@@ -10,7 +10,7 @@ const prismaobj = new PrismaClient();
 async function main() {
 
   // create a dummy user
-  const hash = bcrypt.hashSync("123456#secret", 10);
+  const hash = bcrypt.hashSync(process.env.DEFAULT_PASS as string, 10);
   const author1 = await prismaobj.user.upsert({
     where: { email: 'naylin@example.com' },
     update: {},
