@@ -18,7 +18,7 @@ export async function getUserById(id: number) {
  * Get Single User by Email
  * @returns User
  */
-export async function getArticleByEmail(email: string) {
+export async function getUserByEmail(email: string) {
     const user = await prisma.user.findUnique({where: { email: email}});
     return user;
 }
@@ -36,12 +36,12 @@ export async function createUser(userData: Prisma.UserCreateInput) {
 
 
 /**
- * Update Single Article
- * @returns Article
+ * Update Single User
+ * @returns User
  */
-export async function updateUser(id:number, article: Prisma.ArticleCreateInput) {     
-    const updatePost = await prisma.article.update({where:{ id: id}, data: article});
-    return updatePost;
+export async function updateUser(id:number, user: Prisma.UserCreateInput) {     
+    const updateUser = await prisma.user.update({where:{ id: id}, data: user});
+    return updateUser;
 }
 
 

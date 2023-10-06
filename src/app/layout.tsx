@@ -4,8 +4,10 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import NextTopLoader from 'nextjs-toploader';
+import type { Metadata } from 'next';
+import { AuthProvider } from '@/components/providers/AuthProvider';
 
-import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -20,8 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+          <AuthProvider> 
+           <NextTopLoader color="#5beb34" />
            <NavBar />
            {children}
+          </AuthProvider>
       </body>
     </html>
   )

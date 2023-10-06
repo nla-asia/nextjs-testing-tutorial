@@ -3,26 +3,32 @@ import React from 'react';
 import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { SignUpData, SignUpFormSchema } from '@/types/signup.schema';
+import { redirect } from 'next/navigation'
+
+
 
 
 function SignUpForm() {
     const [loading, setLoading] = useState(false);
-    const [formValues, setFormValues] = useState({
-      name: "",
-      email: "",
-      password: "",
-    });
     const [error, setError] = useState("");
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm<SignUpData>({
+      resolver: zodResolver(SignUpFormSchema),
+    });
   
-    const onSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
+    const onSubmit: SubmitHandler<SignUpData> = async (data) => {
+      
       setLoading(true);
-      setFormValues({ name: "", email: "", password: "" });
-  
       try {
         const res = await fetch("/api/register", {
           method: "POST",
-          body: JSON.stringify(formValues),
+          body: JSON.stringify(data),
           headers: {
             "Content-Type": "application/json",
           },
@@ -33,25 +39,38 @@ function SignUpForm() {
           setError((await res.json()).message);
           return;
         }
+
+        console.log("logging in...");
   
-        signIn(undefined, { callbackUrl: "/" });
+        const result = await signIn("credentials", {
+          redirect: false,
+          email: data.email,
+          password: data.password,
+          callbackUrl:"/",
+        });
+
+        console.log("Sign In Result");
+        console.log(result);
+
+        if(result?.ok){
+          redirect("/");
+        }else{
+
+        }
         
       } catch (error: any) {
+     //   setFormValues({ name: "", email: "", password: "" });
         setLoading(false);
         setError(error);
       }
     };
   
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = event.target;
-      setFormValues({ ...formValues, [name]: value });
-    };
 
   return (
     <Paper 
-        sx={{"display":"block","width":"100%","padding":"20px","max-width":"320px"}} 
+        sx={{"display":"block","width":"100%","padding":"20px","maxWidth":"320px"}} 
         component="form" 
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         autoComplete="no-thanks" >
 
             <Box py={2}>
@@ -67,12 +86,11 @@ function SignUpForm() {
                     id="standard-text-input"
                     label="Name"
                     type="text"
-                    name="name"
-                    value={formValues.name}
-                    onChange={handleChange}
+                    {...register('name')}
                     fullWidth
                     variant="standard"
                     />
+                {errors.name?.message && <p className='error'>{errors.name?.message?.toString()}</p>}
             </Box>
 
             <Box py={2}>  
@@ -80,12 +98,11 @@ function SignUpForm() {
                     id="standard-text-input"
                     label="Email"
                     type="email"
-                    name="email"
-                    value={formValues.email}
-                    onChange={handleChange}
+                    {...register('email')}
                     fullWidth
                     variant="standard"
                     />
+                  {errors.email?.message && <p className='error'>{errors.email?.message?.toString()}</p>}
             </Box>
 
             <Box width={"100%"} py={2}>
@@ -93,13 +110,12 @@ function SignUpForm() {
                     id="standard-password-input"
                     label="Password"
                     type="password"
-                    name="password"
-                    value={formValues.password}
-                    onChange={handleChange}
+                    {...register('password')}
                     fullWidth
                     variant="standard"
 
                     />
+                {errors.password?.message && <p className='error'>{errors.password?.message?.toString()}</p>}
             </Box>
             <Box py={2}>  
                 <Button type="submit" variant="contained" color="success" disabled={loading}>

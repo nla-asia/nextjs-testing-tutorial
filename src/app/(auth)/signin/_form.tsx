@@ -24,8 +24,6 @@ function SignInForm() {
     e.preventDefault();
     try {
       setLoading(true);
-      setFormValues({ email: "", password: "" });
-
       const res = await signIn("credentials", {
         redirect: false,
         email: formValues.email,
@@ -42,6 +40,7 @@ function SignInForm() {
         setError("invalid email or password");
       }
     } catch (error: any) {
+      setFormValues({ email: "", password: "" });
       setLoading(false);
       setError(error);
     }
@@ -53,7 +52,7 @@ function SignInForm() {
   };
   
   return (<Paper 
-        sx={{"display":"block","width":"100%","padding":"20px","max-width":"320px"}} 
+        sx={{"display":"block","width":"100%","padding":"20px","maxWidth":"320px"}} 
         component="form" 
         onSubmit={onSubmit}
         autoComplete="no-thanks" >

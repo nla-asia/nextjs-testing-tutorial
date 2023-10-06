@@ -8,6 +8,9 @@ import Container from '@mui/material/Container';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Button, Stack } from '@mui/material';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import LinkBtn from '@/components/ui/LinkBtn';
+
 
 const LINKS = [
   { text: 'Home', href: '/' },
@@ -15,11 +18,22 @@ const LINKS = [
 ];
 
 const AUTH_LINKS = [
+  { text: 'Account', href: '/account' },
+  { text: 'Logout', href: '/logout' },
+];
+
+const PRE_AUTH_LINKS = [
   { text: 'Sign In', href: '/signin' },
   { text: 'Sign Up', href: '/signup' },
 ];
 
 function NavBar() {
+  const { data: session, status } = useSession();
+
+
+  
+  const RIGHT_MENU = status==="authenticated"? AUTH_LINKS : PRE_AUTH_LINKS;
+
 
   return (
     <AppBar position="static">
@@ -32,7 +46,7 @@ function NavBar() {
             >
             <Toolbar>
               <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                <AdbIcon sx={{ color: 'yellow', display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                 <Typography
                   variant="h6"
                   noWrap
@@ -44,35 +58,24 @@ function NavBar() {
                     fontFamily: 'monospace',
                     fontWeight: 700,
                     letterSpacing: '.3rem',
-                    color: 'inherit',
+                    color: 'yellow',
                     textDecoration: 'none',
                   }}
                 >
                   BLOG
                 </Typography>
 
-                {LINKS.map(({href, text}) => (
-                    <Button
-                    key={href}
-                    href={href}
-                    LinkComponent={Link}
-                    sx={{ color: 'white', display: 'block' }}
-                    > {text}
-                    </Button>
+                {LINKS.map(({href, text}, i) => (
+                    <LinkBtn key={i} href={href} title={text}></LinkBtn>
                 ))}
             </Box>
           </Toolbar>
 
           <Toolbar >
             <Box sx={{ flexGrow: 1, display: 'flex', }}>
-                {AUTH_LINKS.map(({href, text}) => (
-                    <Button
-                    key={href}
-                    href={href}
-                    LinkComponent={Link}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                    >{text}
-                    </Button>
+                {status==="authenticated"? <Button sx={{ my: 2, color: 'white', display: 'block' }}>{`Welcome ${session.user?.name}!`}</Button>:null}
+                {RIGHT_MENU.map(({href, text},i) => (
+                     <LinkBtn  key={i} href={href} title={text}></LinkBtn>
                 ))}
             </Box>
            </Toolbar>
