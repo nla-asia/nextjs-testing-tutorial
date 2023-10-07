@@ -18,8 +18,8 @@ const LINKS = [
 ];
 
 const AUTH_LINKS = [
-  { text: 'Account', href: '/account' },
-  { text: 'Logout', href: '/logout' },
+  { text: 'Add New Post', href: '/new_post' },
+  { text: 'Logout', href: '/api/auth/signout' },
 ];
 
 const PRE_AUTH_LINKS = [
@@ -73,7 +73,7 @@ function NavBar() {
 
           <Toolbar >
             <Box sx={{ flexGrow: 1, display: 'flex', }}>
-                {status==="authenticated"? <Button sx={{ my: 2, color: 'white', display: 'block' }}>{`Welcome ${session.user?.name}!`}</Button>:null}
+                {status==="authenticated"? <LinkBtn href='#' title={`Welcome ${session.user?.name}!`}></LinkBtn>:null}
                 {RIGHT_MENU.map(({href, text},i) => (
                      <LinkBtn  key={i} href={href} title={text}></LinkBtn>
                 ))}

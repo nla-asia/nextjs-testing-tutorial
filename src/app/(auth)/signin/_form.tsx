@@ -4,6 +4,9 @@ import { Box, Button, Paper, TextField, Typography } from '@mui/material'
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from 'next/link';
+import { SignInData, SignInFormSchema } from '@/types/auth.types';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 
 
@@ -11,50 +14,51 @@ function SignInForm() {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [formValues, setFormValues] = useState({
-    email: "",
-    password: "",
-  });
   const [error, setError] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInData>({
+    resolver: zodResolver(SignInFormSchema),
+  });
+
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<SignInData> = async (data) => {
+    
     try {
       setLoading(true);
       const res = await signIn("credentials", {
         redirect: false,
-        email: formValues.email,
-        password: formValues.password,
+        email: data.email,
+        password: data.password,
         callbackUrl,
       });
 
       setLoading(false);
 
-      console.log(res);
+     
       if (!res?.error) {
         router.push(callbackUrl);
       } else {
         setError("invalid email or password");
+        
       }
     } catch (error: any) {
-      setFormValues({ email: "", password: "" });
       setLoading(false);
       setError(error);
     }
   };
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
   
   return (<Paper 
         sx={{"display":"block","width":"100%","padding":"20px","maxWidth":"320px"}} 
         component="form" 
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         autoComplete="no-thanks" >
            
 
@@ -71,12 +75,11 @@ function SignInForm() {
                     id="standard-text-input"
                     label="Email"
                     type="email"
-                    name="email"
-                    value={formValues.email}
-                    onChange={handleChange}
+                    {...register('email')}
                     fullWidth
                     variant="standard"
                     />
+                 {errors.email?.message && <p className='error'>{errors.email?.message?.toString()}</p>}
             </Box>
 
             <Box width={"100%"} py={2}>
@@ -84,13 +87,14 @@ function SignInForm() {
                     id="standard-password-input"
                     label="Password"
                     type="password"
-                    name="password"
-                    value={formValues.password}
-                    onChange={handleChange}
+                    {...register('password')}
                     fullWidth
                     variant="standard"
 
                     />
+
+                {errors.password?.message && <p className='error'>{errors.password?.message?.toString()}</p>}
+                
             </Box>
             <Box py={2}>  
                 <Button type="submit" variant="contained" color="success" disabled={loading}>

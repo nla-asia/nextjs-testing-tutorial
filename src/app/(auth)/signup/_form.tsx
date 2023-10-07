@@ -2,10 +2,10 @@
 import React from 'react';
 import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import { signIn } from "next-auth/react";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SignUpData, SignUpFormSchema } from '@/types/signup.schema';
+import { SignUpData, SignUpFormSchema } from '@/types/auth.types';
 import { redirect } from 'next/navigation'
 
 
@@ -39,8 +39,6 @@ function SignUpForm() {
           setError((await res.json()).message);
           return;
         }
-
-        console.log("logging in...");
   
         const result = await signIn("credentials", {
           redirect: false,
@@ -49,13 +47,12 @@ function SignUpForm() {
           callbackUrl:"/",
         });
 
-        console.log("Sign In Result");
-        console.log(result);
+     
 
         if(result?.ok){
           redirect("/");
         }else{
-
+          redirect("/signin");
         }
         
       } catch (error: any) {

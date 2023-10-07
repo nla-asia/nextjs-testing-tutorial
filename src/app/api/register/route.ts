@@ -1,5 +1,5 @@
 import { createUser, getUserByEmail } from "@/lib/user.service";
-import { SignUpFormSchema } from "@/types/signup.schema";
+import { SignUpFormSchema } from "@/types/auth.types";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

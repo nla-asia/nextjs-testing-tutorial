@@ -1,6 +1,6 @@
 export { default } from "next-auth/middleware";
 
 export const config = {
-  matcher: ["/create-post"],
-  // matcher: ["/((?!register|api|login).*)"],
+  matcher: ["/new_post"],
+ // matcher: ["/((?!register|api|new_post|login).*)"],
 };
