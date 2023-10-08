@@ -7,7 +7,6 @@ import { CardActionArea } from '@mui/material';
 import { Article } from '@/types/article.types';
 import Link from 'next/link';
 import Image from 'next/image';
-import format from 'date-fns/format'
 
 
 interface ArticleItemCardProps {
