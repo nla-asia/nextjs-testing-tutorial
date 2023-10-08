@@ -10,10 +10,36 @@ export async function getArticles(filter: Prisma.ArticleWhereInput, skip:number=
             skip: skip,
             take: take,
             where: filter,
-            orderBy: orderBy
+            orderBy: orderBy,
+            include: {
+                author: {
+                  select: { id:true, name: true, email: true, password: true, createdAt: true, updatedAt: true}
+                }
+            }
         })
         return posts;
 }
+
+/**
+ * Get Multiple Articles
+ * @returns Array<Article>, number total co
+ */
+export async function getArticlesWithTotalCount(filter: Prisma.ArticleWhereInput, skip:number=0, take:number = 10, orderBy: Prisma.ArticleOrderByWithRelationInput={createdAt:'desc'}) {
+    const articles = await prisma.article.findMany({
+        skip: skip,
+        take: take,
+        where: filter,
+        orderBy: orderBy,
+        include: {
+            author: {
+              select: { id:true, name: true, email: true, password: true, createdAt: true, updatedAt: true}
+            }
+        }
+    });
+    const totalCount = await prisma.article.count({where: filter});
+    return {articles, totalCount};
+}
+
 
 /**
  * Get Single Article by Id

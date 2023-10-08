@@ -94,7 +94,7 @@ function SignInForm() {
                     />
 
                 {errors.password?.message && <p className='error'>{errors.password?.message?.toString()}</p>}
-                
+
             </Box>
             <Box py={2}>  
                 <Button type="submit" variant="contained" color="success" disabled={loading}>
@@ -102,7 +102,7 @@ function SignInForm() {
                 </Button>
             </Box>
             <Box py={2}>
-                <p>Don't have an account ? <Link href="/signup"> Sign Up </Link></p>
+                <p>Don&apos;t have an account ? <Link href="/signup"> Sign Up </Link></p>
             </Box>
 
         </Paper>

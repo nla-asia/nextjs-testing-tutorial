@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import { getUserByEmail } from "@/lib/user.service";
 import { compare } from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/lib/prisma"
 
 
 export const authOptions: NextAuthOptions = {

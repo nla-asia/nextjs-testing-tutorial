@@ -1,10 +1,15 @@
-import PostItemsGrid from '@/components/ui/PostItemsGrid'
-import { getArticles } from '@/lib/article.service';
+import ArchiveWithPagination from '@/components/ui/ArchiveWithPagination';
+import { getArticles, getArticlesWithTotalCount } from '@/lib/article.service';
 import { Box, Container, Pagination, Stack, Typography } from '@mui/material'
+import React from 'react';
 
 export default async function Archive() {
+    //const articles = await getArticles({}, 0, 6, {createdAt:"asc"});
     
-    const articles = await getArticles({}, 0, 12, {createdAt:"asc"});
+    const limit = 6;
+    const start = 0;
+    const articlesData = await getArticlesWithTotalCount({}, start, limit, {createdAt:"asc"});
+    const totalPages = articlesData.totalCount? Math.ceil(articlesData.totalCount/limit) : 1;
 
   return (
     <main>
@@ -14,10 +19,7 @@ export default async function Archive() {
                   Archive
                 </Typography>
               </Box>
-              <PostItemsGrid articles={articles} />
-              <Stack spacing={2} py={2}>
-                <Pagination count={10} variant="outlined" shape="rounded" />
-              </Stack>
+              <ArchiveWithPagination articles={articlesData.articles} totalPages={totalPages} ></ArchiveWithPagination>
           </Container>
     </main>
   )

@@ -7,6 +7,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SignUpData, SignUpFormSchema } from '@/types/auth.types';
 import { redirect } from 'next/navigation'
+import Link from 'next/link';
 
 
 
@@ -118,6 +119,10 @@ function SignUpForm() {
                 <Button type="submit" variant="contained" color="success" disabled={loading}>
                 {loading ? "Loading..." : "Sign Up"}
                 </Button>
+            </Box>
+
+            <Box py={2}>
+                <p>Already have an account ? <Link href="/signin"> Sign In </Link></p>
             </Box>
 
         </Paper>

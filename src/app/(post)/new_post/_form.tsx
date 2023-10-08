@@ -2,10 +2,12 @@
 import { NewPostData, NewPostFormSchema } from '@/types/article.types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Paper, TextField } from '@mui/material'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 function NewPostForm() {
+    const router = useRouter()
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const {
@@ -28,16 +30,22 @@ function NewPostForm() {
           },
         });
   
-        setLoading(false);
         if (!res.ok) {
           setError((await res.json()).message);
           return;
         }
+       
+        router.push("/");
+        
 
       } catch (error: any) {
-        setLoading(false);
+        console.log("error", error);
         setError(error);
+      } finally {
+        setLoading(false);
       }
+
+
     };
 
   return (
@@ -51,7 +59,7 @@ function NewPostForm() {
            
 
             {error && (
-                <Box sx={{"color":"red"}}>{error}</Box>
+                <p className='error'>{error}</p>
             )}
 
             <Box py={2}>  
